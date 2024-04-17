@@ -1,30 +1,42 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
+<script>
+import axios from 'axios';
+import { store } from "./store.js";
+import AppHeader from "./components/AppHeader.vue";
+import AppCardsList from "./components/AppCardsList.vue";
+
+export default {
+  components: {
+    AppHeader,
+    AppCardsList,
+  },
+  data() {
+    return {
+      store,
+    };
+  },
+  methods: {
+    getCardsFromApi() {
+      axios
+        .get("https://db.ygoprodeck.com/api/v7/cardinfo.php?num=20&offset=0")
+        .then((response) => {
+          console.log(response.data.data);
+          store.cards = response.data.data;
+        });
+    },
+  },
+  mounted() {
+    this.getCardsFromApi();
+  },
+};
 </script>
 
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+  <AppHeader></AppHeader>
+  <main class="p-5">
+    <AppCardsList></AppCardsList>
+  </main>
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
+<style lang="scss">
+@use "./style/generic";
 </style>
